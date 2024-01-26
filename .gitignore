@@ -132,3 +132,16 @@ dmypy.json
 .pyre/
 
 IDRiD_data
+
+resources/
+train/
+test/
+val/
+
+finetune_IDRiD/
+internal_IDRiD/
+output_dir/
+output_dir./
+
+RETFound_cfp_weights.pth
+.ipynb_checkpoints
