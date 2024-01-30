@@ -142,6 +142,7 @@ finetune_IDRiD/
 internal_IDRiD/
 output_dir/
 output_dir./
+finetune_IDRiD_*/
 
 RETFound_cfp_weights.pth
 .ipynb_checkpoints
