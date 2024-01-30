@@ -151,6 +151,11 @@ def get_args_parser():
     return parser
 
 
+def generate_random_coreset(dataset, num_samples):
+    # dataset is a pytorch dataset
+    return torch.utils.data.random_split(dataset, [len(dataset) - num_samples, num_samples])[1]
+
+
 def main(args):
     misc.init_distributed_mode(args)
 
@@ -167,6 +172,8 @@ def main(args):
     cudnn.benchmark = True
 
     dataset_train = build_dataset(is_train='train', args=args)
+    dataset_train = generate_random_coreset(dataset_train, num_samples= int(len(dataset_train)/10))
+
     dataset_val = build_dataset(is_train='val', args=args)
     dataset_test = build_dataset(is_train='test', args=args)
 
@@ -316,6 +323,7 @@ def main(args):
 
     if args.eval:
         test_stats,auc_roc = evaluate(data_loader_test, model, device, args.task, epoch=0, mode='test',num_class=args.nb_classes)
+        # train_stats,auc_roc_train = evaluate(data_loader_train, model, device, args.task, epoch=0, mode='test',num_class=args.nb_classes)
         exit(0)
 
     print(f"Start training for {args.epochs} epochs")
