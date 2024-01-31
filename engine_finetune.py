@@ -15,10 +15,12 @@ from timm.utils import accuracy
 from typing import Iterable, Optional
 import util.misc as misc
 import util.lr_sched as lr_sched
-from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, average_precision_score,multilabel_confusion_matrix
+from sklearn.metrics import balanced_accuracy_score, roc_auc_score, f1_score, average_precision_score,multilabel_confusion_matrix, classification_report, roc_auc_score, confusion_matrix
 from pycm import *
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.preprocessing import LabelBinarizer
+import sklearn
 
 
 
@@ -35,6 +37,7 @@ def misc_measures(confusion_matrix):
     
     for i in range(1, confusion_matrix.shape[0]):
         cm1=confusion_matrix[i]
+        print(cm1)
         acc.append(1.*(cm1[0,0]+cm1[1,1])/np.sum(cm1))
         sensitivity_ = 1.*cm1[1,1]/(cm1[1,0]+cm1[1,1])
         sensitivity.append(sensitivity_)
@@ -46,7 +49,7 @@ def misc_measures(confusion_matrix):
         F1_score_2.append(2*precision_*sensitivity_/(precision_+sensitivity_))
         mcc = (cm1[0,0]*cm1[1,1]-cm1[0,1]*cm1[1,0])/np.sqrt((cm1[0,0]+cm1[0,1])*(cm1[0,0]+cm1[1,0])*(cm1[1,1]+cm1[1,0])*(cm1[1,1]+cm1[0,1]))
         mcc_.append(mcc)
-        
+
     acc = np.array(acc).mean()
     sensitivity = np.array(sensitivity).mean()
     specificity = np.array(specificity).mean()
@@ -182,6 +185,22 @@ def evaluate(data_loader, model, device, task, epoch, mode, num_class):
     # gather the stats from all processes
     true_label_decode_list = np.array(true_label_decode_list)
     prediction_decode_list = np.array(prediction_decode_list)
+
+    # print(true_label_decode_list)
+    # print(prediction_decode_list)
+    # print(classification_report(true_label_decode_list, prediction_decode_list))
+    # mlb = LabelBinarizer()
+    # mlb_true = mlb.fit_transform(true_label_decode_list)
+    # mlb_pred = mlb.transform(prediction_decode_list)
+    # print("AUROC Score:")
+    # print(roc_auc_score(mlb_true, mlb_pred, multi_class='ovo', average="micro"))
+    # print("Accuracy Score:")
+    # print(balanced_accuracy_score(true_label_decode_list, prediction_decode_list))
+    # print(sklearn.metrics.confusion_matrix(true_label_decode_list, prediction_decode_list))
+    # print("Per Class Accuracy:")
+    # matrix = sklearn.metrics.confusion_matrix(true_label_decode_list, prediction_decode_list)
+    # print(matrix.diagonal()/matrix.sum(axis=1))
+
     confusion_matrix = multilabel_confusion_matrix(true_label_decode_list, prediction_decode_list,labels=[i for i in range(num_class)])
     acc, sensitivity, specificity, precision, G, F1, mcc = misc_measures(confusion_matrix)
     

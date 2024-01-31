@@ -31,6 +31,7 @@ from util.misc import NativeScalerWithGradNormCount as NativeScaler
 import models_vit
 
 from engine_finetune import train_one_epoch, evaluate
+from util.visualize import plot_dataset_label_histogram
 
 
 def get_args_parser():
@@ -171,8 +172,11 @@ def main(args):
 
     cudnn.benchmark = True
 
+    dataset_percent = 10
     dataset_train = build_dataset(is_train='train', args=args)
-    dataset_train = generate_random_coreset(dataset_train, num_samples= int(len(dataset_train)/10))
+    dataset_train = generate_random_coreset(dataset_train, num_samples= int(len(dataset_train)/100 * dataset_percent))
+
+    plot_dataset_label_histogram(dataset_train, f"./histograms/labels_{dataset_percent}_percent.jpg")
 
     dataset_val = build_dataset(is_train='val', args=args)
     dataset_test = build_dataset(is_train='test', args=args)
