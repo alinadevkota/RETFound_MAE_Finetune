@@ -118,6 +118,8 @@ def get_args_parser():
                         help='dataset path')
     parser.add_argument('--nb_classes', default=1000, type=int,
                         help='number of the classification types')
+    parser.add_argument('--dataset_percent', default=100, type=int,
+                        help='percent of labeled data to use')
 
     parser.add_argument('--output_dir', default='./output_dir',
                         help='path where to save, empty for no saving')
@@ -172,7 +174,7 @@ def main(args):
 
     cudnn.benchmark = True
 
-    dataset_percent = 10
+    dataset_percent = args.dataset_percent
     dataset_train = build_dataset(is_train='train', args=args)
     dataset_train = generate_random_coreset(dataset_train, num_samples= int(len(dataset_train)/100 * dataset_percent))
 

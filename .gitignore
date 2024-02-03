@@ -139,11 +139,14 @@ test/
 val/
 
 finetune_IDRiD/
-internal_IDRiD/
+internal_*/
 output_dir/
 output_dir./
-finetune_IDRiD_*/
+finetune_*/
 histograms/
+evaluate_*/
+APTOS2019/
+aptos2019/
 
 RETFound_cfp_weights.pth
 .ipynb_checkpoints
