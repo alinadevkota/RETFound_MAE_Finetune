@@ -156,7 +156,7 @@ def get_args_parser():
 
 def generate_random_coreset(dataset, num_samples):
     # dataset is a pytorch dataset
-    return torch.utils.data.random_split(dataset, [len(dataset) - num_samples, num_samples])[1]
+    return torch.utils.data.random_split(dataset, [len(dataset) - num_samples, num_samples])
 
 
 def main(args):
@@ -176,7 +176,31 @@ def main(args):
 
     dataset_percent = args.dataset_percent
     dataset_train = build_dataset(is_train='train', args=args)
-    dataset_train = generate_random_coreset(dataset_train, num_samples= int(len(dataset_train)/100 * dataset_percent))
+    dataset_train_unlabeled, dataset_train = generate_random_coreset(dataset_train, num_samples= int(len(dataset_train)/100 * dataset_percent))
+    # print(dataset_train.dataset.imgs)
+    # print(len(dataset_train.dataset.imgs))
+    # print(len(dataset_train.indices))
+    # exit()
+    import shutil
+    train_images = [dataset_train.dataset.imgs[i] for i in dataset_train.indices]
+    train_images_unlabelled = [dataset_train_unlabeled.dataset.imgs[i] for i in dataset_train_unlabeled.indices]
+    for img_path, class_idx in train_images:
+        print(img_path)
+        dst_img_path = img_path.replace("APTOS2019", f"APTOS2019_{dataset_percent}percent")
+        directory = "/".join(dst_img_path.split("/")[:-1])
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        shutil.copy(img_path, dst_img_path)
+    for img_path, class_idx in train_images_unlabelled:
+        print(img_path)
+        dst_img_path = img_path.replace("APTOS2019", f"APTOS2019_{dataset_percent}percent")
+        dst_img_path = dst_img_path.replace("train", "train_unlabelled")
+        directory = "/".join(dst_img_path.split("/")[:-1])
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        shutil.copy(img_path, dst_img_path)
+
+    exit()
 
     plot_dataset_label_histogram(dataset_train, f"./histograms/labels_{dataset_percent}_percent.jpg")
 
