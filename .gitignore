@@ -143,10 +143,11 @@ internal_*/
 output_dir/
 output_dir./
 finetune_*/
-histograms/
+histograms_*/
 evaluate_*/
 APTOS2019/
 aptos2019/
+idrid_embedding/
 
 RETFound_cfp_weights.pth
 .ipynb_checkpoints

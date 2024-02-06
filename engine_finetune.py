@@ -188,7 +188,7 @@ def evaluate(data_loader, model, device, task, epoch, mode, num_class):
 
     print(true_label_decode_list)
     print(prediction_decode_list)
-    print(classification_report(true_label_decode_list, prediction_decode_list))
+    print(classification_report(true_label_decode_list, prediction_decode_list, digits=4))
     mlb = LabelBinarizer()
     mlb_true = mlb.fit_transform(true_label_decode_list)
     mlb_pred = mlb.transform(prediction_decode_list)
